@@ -21,11 +21,22 @@ export default function App() {
         style={styles.list}
         contentContainerStyle={styles.listContent}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.breedName}>{item.breed}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const featureKey = Object.keys(item).filter(
+            (key) => key !== 'id' && key !== 'breed');
+        
+          return(
+            <View style = {styles.row}>
+              <Text style={styles.breedName}>{item.breed}</Text>
+
+              {featureKey.map((featureKey) => (
+                <Text key={featureKey} style={styles.featureText}>
+                    {featureKey}: {item[featureKey]}
+                </Text>
+              ))}
+            </View>
+          )
+        }}
       />
 
       <StatusBar style="auto" />
@@ -65,9 +76,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
   },
+  
+
   breedName: {
     fontSize: 18,
     lineHeight: 24,
-    fontWeight: '500',
+    fontWeight: '700',
   },
+  featureRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical : 2,
+  },
+  featureLabel:{
+    fontSize: 16,
+    color: '#222',
+    flex: 1,
+    marginRight: 12,
+  },
+  featureValue : {
+    fontSize : 16,
+    color: '#111',
+    minWidth: 22,
+    textAlign: 'right',
+ 
+  }
 });
