@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { cats, dogs } from './breeds';
 
 const allBreeds = [...cats, ...dogs].map((breed, index) => ({
@@ -17,6 +18,8 @@ export default function App() {
 
       <FlatList
         data={allBreeds}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.row}>
@@ -40,6 +43,13 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 8,
   },
+  list: {
+    flex: 1,
+    width: '100%',
+  },
+  listContent: {
+    paddingBottom: 12,
+  },
   title: {
     fontSize: 28,
     fontWeight: '700',
@@ -52,10 +62,12 @@ const styles = StyleSheet.create({
   row: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#ccc',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
   },
   breedName: {
-    fontSize: 16,
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: '500',
   },
 });
