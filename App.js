@@ -23,19 +23,30 @@ export default function App() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           const featureKey = Object.keys(item).filter(
-            (key) => key !== 'id' && key !== 'breed');
-        
-          return(
-            <View style = {styles.row}>
+            (key) => key !== 'id' && key !== 'breed'
+          );
+
+          return (
+            <View style={styles.row}>
               <Text style={styles.breedName}>{item.breed}</Text>
 
-              {featureKey.map((featureKey) => (
-                <Text key={featureKey} style={styles.featureText}>
-                    {featureKey}: {item[featureKey]}
-                </Text>
-              ))}
+              {featureKey.map((featureKey) => {
+                const value = Number(item[featureKey]) || 0;
+                const barWidth = `${(value / 5) * 100}%`;
+
+                return (
+                  <View key={featureKey} style={styles.featureRow}>
+                    <Text style={styles.featureLabel}>
+                      {featureKey} {value}
+                    </Text>
+                    <View style={styles.barTrack}>
+                      <View style={[styles.barFill, { width: barWidth }]} />
+                    </View>
+                  </View>
+                );
+              })}
             </View>
-          )
+          );
         }}
       />
 
@@ -76,30 +87,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
   },
-  
-
   breedName: {
     fontSize: 18,
     lineHeight: 24,
     fontWeight: '700',
+    marginBottom: 6,
   },
   featureRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical : 2,
+    paddingVertical: 3,
   },
-  featureLabel:{
+  featureLabel: {
     fontSize: 16,
     color: '#222',
     flex: 1,
     marginRight: 12,
   },
-  featureValue : {
-    fontSize : 16,
-    color: '#111',
-    minWidth: 22,
-    textAlign: 'right',
- 
-  }
+  barTrack: {
+    width: 150,
+    height: 14,
+    backgroundColor: '#cfcfcf',
+  },
+  barFill: {
+    height: '100%',
+    backgroundColor: '#666',
+  },
 });
