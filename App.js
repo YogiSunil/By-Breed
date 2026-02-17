@@ -1,14 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { useMemo, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { cats, dogs } from './breeds';
 
+
 export default function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-
   const selectedBreeds = selectedIndex === 0 ? cats : dogs;
+  const [searchText, setSearchText] = useState('');
 
   const breedsData = useMemo(
     () =>
@@ -18,6 +19,15 @@ export default function App() {
       })),
     [selectedBreeds]
   );
+
+  const filteredBreeds = useMemo(() => {
+    const term = searchText.trim().toLowerCase();
+    if (!term) return breedsData;
+
+    return breedsData.filter((breed) => 
+    breed.breed.toLowerCase().includes(term));
+
+  }, [breedsData, searchText]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,10 +40,17 @@ export default function App() {
           onChange={(event) => setSelectedIndex(event.nativeEvent.selectedSegmentIndex)}
           style={styles.segmentedControl}
         />
+        <TextInput 
+          value={searchText}
+          onChangeText={setSearchText}
+          placeholder='Search by breed name...'
+          style={styles.searchInput}
+
+        />
       </View>
 
       <FlatList
-        data={breedsData}
+        data={filteredBreeds}
         style={styles.list}
         contentContainerStyle={styles.listContent}
         keyExtractor={(item) => item.id}
@@ -58,22 +75,6 @@ export default function App() {
                     <Text style={styles.starsText}>{stars}</Text>
                   </View>
                 )
-
-
-                // const value = Number(item[featureKey]) || 0;
-                // const barWidth = `${(value / 5) * 100}%`;
-
-                // return (
-                //   <View key={featureKey} style={styles.featureRow}>
-                //     <Text style={styles.featureLabel}>
-                //       {featureKey} {value}
-                //     </Text>
-                //     <View style={styles.barTrack}>
-                //       <View style={[styles.barFill, { width: barWidth }]} />
-                //     </View>
-                //   </View>
-                // );
-
               })}
             </View>
           );
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingTop: 50,
     paddingBottom: 8,
   },
   list: {
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
-    alignItems: 'center',
     fontSize: 28,
     fontWeight: '700',
   },
@@ -114,6 +114,17 @@ const styles = StyleSheet.create({
   },
   segmentedControl: {
     marginTop: 12,
+  },
+  searchInput: {
+    margin:10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    backgroundColor: '#fff',
+
   },
   row: {
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -139,19 +150,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 12,
   },
-  barTrack: {
-    width: 150,
-    height: 14,
-    backgroundColor: '#cfcfcf',
-  },
-  barFill: {
-    height: '100%',
-    backgroundColor: '#666',
-  },
   starsText: {
     width: 150,
     textAlign:'right',
     fontSize: 22,
     lineHeight: 26,
   },
+  
 });
