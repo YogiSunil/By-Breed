@@ -1,23 +1,39 @@
 import { StatusBar } from 'expo-status-bar';
+import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { cats, dogs } from './breeds';
 
-const allBreeds = [...cats, ...dogs].map((breed, index) => ({
-  id: `${breed.breed}-${index}`,
-  ...breed,
-}));
-
 export default function App() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const selectedBreeds = selectedIndex === 0 ? cats : dogs;
+
+  const breedsData = useMemo(
+    () =>
+      selectedBreeds.map((breed, index) => ({
+        id: `${breed.breed}-${index}`,
+        ...breed,
+      })),
+    [selectedBreeds]
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>By Breed</Text>
         <Text style={styles.subtitle}>Cats: {cats.length} • Dogs: {dogs.length}</Text>
+        <SegmentedControl
+          values={['Cats', 'Dogs']}
+          selectedIndex={selectedIndex}
+          onChange={(event) => setSelectedIndex(event.nativeEvent.selectedSegmentIndex)}
+          style={styles.segmentedControl}
+        />
       </View>
 
       <FlatList
-        data={allBreeds}
+        data={breedsData}
         style={styles.list}
         contentContainerStyle={styles.listContent}
         keyExtractor={(item) => item.id}
@@ -76,7 +92,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 12,
+    paddingTop: 10,
     paddingBottom: 8,
   },
   list: {
@@ -87,6 +103,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
+    alignItems: 'center',
     fontSize: 28,
     fontWeight: '700',
   },
@@ -94,6 +111,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 4,
     color: '#444',
+  },
+  segmentedControl: {
+    marginTop: 12,
   },
   row: {
     borderBottomWidth: StyleSheet.hairlineWidth,
