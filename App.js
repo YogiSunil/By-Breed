@@ -31,19 +31,33 @@ export default function App() {
               <Text style={styles.breedName}>{item.breed}</Text>
 
               {featureKey.map((featureKey) => {
-                const value = Number(item[featureKey]) || 0;
-                const barWidth = `${(value / 5) * 100}%`;
+                const value = Math.max(0, Math.min(5, Number(item[featureKey]) || 0));
+                const stars = '⭐️'.repeat(value);
 
-                return (
+                return(
                   <View key={featureKey} style={styles.featureRow}>
                     <Text style={styles.featureLabel}>
                       {featureKey} {value}
                     </Text>
-                    <View style={styles.barTrack}>
-                      <View style={[styles.barFill, { width: barWidth }]} />
-                    </View>
+                    <Text style={styles.starsText}>{stars}</Text>
                   </View>
-                );
+                )
+
+
+                // const value = Number(item[featureKey]) || 0;
+                // const barWidth = `${(value / 5) * 100}%`;
+
+                // return (
+                //   <View key={featureKey} style={styles.featureRow}>
+                //     <Text style={styles.featureLabel}>
+                //       {featureKey} {value}
+                //     </Text>
+                //     <View style={styles.barTrack}>
+                //       <View style={[styles.barFill, { width: barWidth }]} />
+                //     </View>
+                //   </View>
+                // );
+
               })}
             </View>
           );
@@ -113,5 +127,11 @@ const styles = StyleSheet.create({
   barFill: {
     height: '100%',
     backgroundColor: '#666',
+  },
+  starsText: {
+    width: 150,
+    textAlign:'right',
+    fontSize: 22,
+    lineHeight: 26,
   },
 });
